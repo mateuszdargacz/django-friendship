@@ -332,11 +332,10 @@ class FriendshipManager(models.Manager):
         elif friends2 and user1 in friends2:
             return True
         else:
-            try:
-                Friend.objects.get(to_user=user1, from_user=user2)
-                return True
-            except Friend.DoesNotExist:
-                return False
+            return Friend.objects.filter(
+                    Q(to_user=user1, from_user=user2) |
+                    Q(to_user=user2, from_user=user1)
+            ).exists()
 
 
 @python_2_unicode_compatible
